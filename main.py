@@ -181,6 +181,7 @@ def main():
     death_count = 0
     indices = [int(img[:-4]) for img in os.listdir(r'CNN_Training_Data\IMAGES')]
     frame_count = sorted(indices)[-1] * 5 if len(indices) > 0 else 0
+    image_count = sorted(indices)[-1] + 1 if len(indices) > 0 else 0
 
     with open(r'CNN_Training_Data\inputs.txt','r') as f:
         data = f.read()
@@ -237,7 +238,7 @@ def main():
                 indices = [int(img[:-4]) for img in os.listdir(r'CNN_Training_Data\IMAGES')]
                 last_ = sorted(indices)[-1] if len(indices) > 0 else 0
                 
-                for i in range(last_ - 3 ,last_):
+                for i in range(last_ - 2 ,last_+1):
                     if i > -1:
                         os.remove(f'CNN_Training_Data/IMAGES/{i}.png')
 
@@ -264,15 +265,18 @@ def main():
         clock.tick(30)
         pygame.display.update()
         if frame_count %5 == 0 or userInput[pygame.K_UP] or userInput[pygame.K_DOWN]:
-            pygame.image.save(SCREEN,f'CNN_Training_Data/IMAGES/{frame_count // 5}.png')
+            
+            pygame.image.save(SCREEN,f'CNN_Training_Data/IMAGES/{image_count}.png')
             if userInput[pygame.K_UP]:
                 data += '1'
-                frame_count += 4
+                
             elif userInput[pygame.K_DOWN]:
                 data += '2'
-                frame_count += 4
+              
             else:
                 data += '0'
+            image_count += 1
+
         frame_count += 1
 
 
@@ -302,6 +306,7 @@ def menu(death_count):
                 run = False
             if event.type == pygame.KEYDOWN:
                 main()
+        
 
 
 menu(death_count=0)
