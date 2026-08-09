@@ -179,10 +179,10 @@ def main():
     font = pygame.font.Font('freesansbold.ttf', 20)
     obstacles = []
     death_count = 0
-    indices = [int(img[:-4]) for img in os.listdir(r'IMAGES')]
+    indices = [int(img[:-4]) for img in os.listdir(r'CNN_Training_Data\IMAGES')]
     frame_count = sorted(indices)[-1] * 5 if len(indices) > 0 else 0
 
-    with open('inputs.txt','w') as f:
+    with open(r'CNN_Training_Data\inputs.txt','r') as f:
         data = f.read()
 
     def score():
@@ -218,11 +218,12 @@ def main():
         player.update(userInput)
 
         if len(obstacles) == 0:
-            if random.randint(0, 2) == 0:
+            obs = random.randint(0, 2)
+            if  obs == 0:
                 obstacles.append(SmallCactus(SMALL_CACTUS))
-            elif random.randint(0, 2) == 1:
+            elif obs == 1:
                 obstacles.append(LargeCactus(LARGE_CACTUS))
-            elif random.randint(0, 2) == 2:
+            elif obs == 2:
                 obstacles.append(Bird(BIRD))
 
         for obstacle in obstacles:
@@ -231,6 +232,26 @@ def main():
             if player.dino_rect.colliderect(obstacle.rect):
                 pygame.time.delay(2000)
                 death_count += 1
+
+                # Clear last 3 Images
+                indices = [int(img[:-4]) for img in os.listdir(r'CNN_Training_Data\IMAGES')]
+                last_ = sorted(indices)[-1] if len(indices) > 0 else 0
+                
+                for i in range(last_ - 3 ,last_):
+                    if i > -1:
+                        os.remove(f'CNN_Training_Data/IMAGES/{i}.png')
+
+                # Clear last 3 input bits
+                if len(data) > 3:
+                    data = data[:-3]
+                else:
+                    data = ""
+
+                # Save collected Input data
+                with open(r'CNN_Training_Data\inputs.txt','w') as f:
+                    f.write(data)
+                    f.close()
+                
                 menu(death_count)
 
         background()
@@ -242,8 +263,16 @@ def main():
 
         clock.tick(30)
         pygame.display.update()
-        if frame_count %5 == 0:
-            pygame.image.save(SCREEN,f'IMAGES/{frame_count // 5}.png')
+        if frame_count %5 == 0 or userInput[pygame.K_UP] or userInput[pygame.K_DOWN]:
+            pygame.image.save(SCREEN,f'CNN_Training_Data/IMAGES/{frame_count // 5}.png')
+            if userInput[pygame.K_UP]:
+                data += '1'
+                frame_count += 4
+            elif userInput[pygame.K_DOWN]:
+                data += '2'
+                frame_count += 4
+            else:
+                data += '0'
         frame_count += 1
 
 
