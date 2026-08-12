@@ -211,6 +211,10 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                # Save collected Input data
+                with open(r'CNN_Training_Data\inputs.txt','w') as f:
+                    f.write(data)
+                    f.close()
 
         SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
@@ -264,7 +268,7 @@ def main():
 
         clock.tick(30)
         pygame.display.update()
-        if frame_count %5 == 0 or userInput[pygame.K_UP] or userInput[pygame.K_DOWN]:
+        if True:
             
             pygame.image.save(SCREEN,f'CNN_Training_Data/IMAGES/{image_count}.png')
             if userInput[pygame.K_UP]:
