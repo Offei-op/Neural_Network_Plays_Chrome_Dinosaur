@@ -179,12 +179,7 @@ def main():
     font = pygame.font.Font('freesansbold.ttf', 20)
     obstacles = []
     death_count = 0
-    indices = [int(img[:-4]) for img in os.listdir(r'CNN_Training_Data\IMAGES')]
-    frame_count = sorted(indices)[-1] * 5 if len(indices) > 0 else 0
-    image_count = sorted(indices)[-1] + 1 if len(indices) > 0 else 0
-
-    with open(r'CNN_Training_Data\inputs.txt','r') as f:
-        data = f.read()
+    
 
     def score():
         global points, game_speed
@@ -233,25 +228,6 @@ def main():
             if player.dino_rect.colliderect(obstacle.rect):
                 pygame.time.delay(2000)
                 death_count += 1
-
-                # Clear last 3 Images
-                indices = [int(img[:-4]) for img in os.listdir(r'CNN_Training_Data\IMAGES')]
-                last_ = sorted(indices)[-1] if len(indices) > 0 else 0
-                
-                for i in range(last_ - 2 ,last_+1):
-                    if i > -1:
-                        os.remove(f'CNN_Training_Data/IMAGES/{i}.png')
-
-                # Clear last 3 input bits
-                if len(data) > 3:
-                    data = data[:-3]
-                else:
-                    data = ""
-
-                # Save collected Input data
-                with open(r'CNN_Training_Data\inputs.txt','w') as f:
-                    f.write(data)
-                    f.close()
                 
                 menu(death_count)
 
@@ -264,22 +240,8 @@ def main():
 
         clock.tick(30)
         pygame.display.update()
-        if frame_count %5 == 0 or userInput[pygame.K_UP] or userInput[pygame.K_DOWN]:
-            
-            pygame.image.save(SCREEN,f'CNN_Training_Data/IMAGES/{image_count}.png')
-            if userInput[pygame.K_UP]:
-                data += '1'
-                
-            elif userInput[pygame.K_DOWN]:
-                data += '2'
-              
-            else:
-                data += '0'
-            image_count += 1
 
-        frame_count += 1
-
-
+        
 def menu(death_count):
     global points
     run = True
