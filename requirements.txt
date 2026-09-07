@@ -1,0 +1,6 @@
+pygame
+torch
+torchvision
+pillow
+scikit-learn
+tqdm
